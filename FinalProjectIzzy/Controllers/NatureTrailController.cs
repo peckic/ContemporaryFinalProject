@@ -4,18 +4,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FirstWebAPI.Data;
-using FirstWebAPI.Models;
+using FinalProjectIzzy.Data;
+using FinalProjectIzzy.Models;
 
-namespace FirstWebAPI.Controllers
+namespace FinalProjectIzzy.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class NatureTrailController: ControllerBase
     {
-        private readonly FirstWebAPIContext _context;
+        private readonly FinalProjectIzzyContext _context;
 
-        public NatureTrailController(FirstWebAPIContext context)
+        public NatureTrailController(FinalProjectIzzyContext context)
         {
             _context = context;
         }
@@ -52,7 +52,7 @@ namespace FirstWebAPI.Controllers
             await _context.SaveChangesAsync();
 
             // assumes TrailNumber is the key
-            return CreatedAtAction(nameof(GetNatureTrail), new { id = natureTrail.TrailNumber }, natureTrail);
+            return CreatedAtAction(nameof(GetNatureTrail), new { id = natureTrail.Id }, natureTrail);
         }
 
         // DELETE: api/NatureTrail/5
@@ -75,7 +75,7 @@ namespace FirstWebAPI.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> PutNatureTrail(int id, [FromBody] NatureTrail natureTrail)
         {
-            if (id != natureTrail.TrailNumber)
+            if (id != natureTrail.Id)
                 return BadRequest();
 
             _context.Entry(natureTrail).State = EntityState.Modified;
@@ -86,7 +86,7 @@ namespace FirstWebAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.NatureTrail.Any(e => e.TrailNumber == id))
+                if (!_context.NatureTrail.Any(e => e.Id == id))
                     return NotFound();
                 throw;
             }

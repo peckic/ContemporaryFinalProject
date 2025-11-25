@@ -1,19 +1,21 @@
 using System.ComponentModel.DataAnnotations;
 
-
-namespace FirstWebAPI.Models
+namespace FirstWebApi.Models
 {
     public class NatureTrail
     {
-        public int TrailNumber { get; set; }
+        [Key]
+        public int Id { get; set; }
         public string TrailName { get; set; } = string.Empty;
         public double TrailLength { get; set; }
         public string DifficultyLevel { get; set; } = string.Empty;
         public string WildLifeSightings { get; set; } = string.Empty;
+
         public NatureTrail() { }
-        public NatureTrail(int trailNumber, string trailName, double trailLength, string difficultyLevel, string wildLifeSightings)
+
+        public NatureTrail(int id, string trailName, double trailLength, string difficultyLevel, string wildLifeSightings)
         {
-            TrailNumber = trailNumber;
+            Id = id;
             TrailName = trailName;
             TrailLength = trailLength;
             DifficultyLevel = difficultyLevel;
