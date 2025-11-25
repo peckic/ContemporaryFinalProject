@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FirstWebApi.Models
+namespace FinalProjectIzzy.Models
 {
     public class NatureTrail
     {

@@ -11,7 +11,7 @@ namespace FinalProjectIzzy.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NatureTrailController: ControllerBase
+    public class NatureTrailController : ControllerBase
     {
         private readonly FinalProjectIzzyContext _context;
 
@@ -25,8 +25,8 @@ namespace FinalProjectIzzy.Controllers
         [HttpGet]
         public async Task<IActionResult> GetNatureTrails()
         {
-            var list = await _context.NatureTrail.ToListAsync();
-            return Ok(list);
+            var trails = await _context.NatureTrail.ToListAsync();
+            return Ok(trails);
         }
 
         // GET: api/NatureTrail/5
@@ -48,10 +48,27 @@ namespace FinalProjectIzzy.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            _context.NatureTrail.Add(natureTrail);
-            await _context.SaveChangesAsync();
+            // Ensure we don't try to insert a conflicting primary key (use DB identity)
+            natureTrail.Id = 0;
 
-            // assumes TrailNumber is the key
+            _context.NatureTrail.Add(natureTrail);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException dbEx)
+            {
+                // Return a Problem response during development so you can see the error.
+                // In production, log dbEx and return a generic error.
+                return Problem(detail: dbEx.InnerException?.Message ?? dbEx.Message, statusCode: StatusCodes.Status500InternalServerError);
+            }
+            catch (Exception ex)
+            {
+                return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+            }
+
+            // assumes Id is the key
             return CreatedAtAction(nameof(GetNatureTrail), new { id = natureTrail.Id }, natureTrail);
         }
 
